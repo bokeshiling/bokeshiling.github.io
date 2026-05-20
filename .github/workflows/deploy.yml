@@ -3,10 +3,21 @@ name: Deploy Blog
 on:
   push:
     branches:
-      - source # 只有推送 source 分支时触发
+      - source
+
+# 允许这个 job 拥有部署到 GitHub Pages 所需的权限
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 确保同时只有一个部署任务在运行
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Source
@@ -24,10 +35,18 @@ jobs:
       - name: Build Hexo
         run: npx hexo generate
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
-          publish_branch: main # 部署到 main 分支
-          commit_message: "Auto deploy by GitHub Actions"
+          path: ./public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
