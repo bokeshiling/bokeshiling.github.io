@@ -3,7 +3,7 @@ name: Deploy Blog
 on:
   push:
     branches:
-      - source
+      - main
 
 # 允许这个 job 拥有部署到 GitHub Pages 所需的权限
 permissions:
