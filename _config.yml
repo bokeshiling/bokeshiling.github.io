@@ -3,17 +3,17 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: 诗陵的博客
+title: 夜花园
 subtitle: 大抵平生多乐事, 想来文墨最风流.
 description: 记录生活.
 keywords: 数学, 文学, 物理, 计算机.
-author: Shiling
-language: zh
+author: Jialing Ran
+language: zh-CN
 timezone: Asia/Shanghai
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
-url: https://bokeshiling.github.io
+url: https://bokeshiling.github.io/
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 pretty_urls:
@@ -98,9 +98,4 @@ ignore:
 ## Themes: https://hexo.io/themes/
 theme: landscape
 
-# Deployment
-## Docs: https://hexo.io/docs/one-command-deployment
-deploy:
-  type: git
-  repo: https://github.com/bokeshiling/bokeshiling.github.io.git
-  branch: main
+# Deployment is handled by GitHub Actions (see .github/workflows/deploy.yml).
