@@ -2,46 +2,33 @@
 
 ## Project Structure & Module Organization
 
-- `source/_posts/` — Markdown posts (the only content directory in use)
-- `scaffolds/` — templates used by `npx hexo new`
-- `_config.yml` — site-wide Hexo configuration (title, permalink, theme)
-- `themes/` — empty; the `landscape` theme is installed via npm
-- `.github/workflows/deploy.yml` — CI pipeline that builds and publishes to GitHub Pages
-- `public/`, `db.json`, `.deploy_git/` — gitignored generated artifacts; never commit them
+Firefly is an Astro 7 site with Svelte islands and TypeScript configuration. Main source code lives in `src/`: routes in `src/pages`, layouts in `src/layouts`, reusable UI in `src/components`, styles in `src/styles`, content in `src/content`, helpers in `src/utils`, and Markdown/HTML plugins in `src/plugins`. Site configuration is split across `src/config` with matching type definitions in `src/types`; prefer imports from `@/config` when available. Static files served directly belong in `public`, source-managed images in `src/assets`, docs in `docs` and `Firefly-Docs`, and automation in `scripts`.
 
 ## Build, Test, and Development Commands
 
-- `npm install` — install dependencies
-- `npm run server` — local server at `http://localhost:4000` with live reload
-- `npm run build` — static build into `public/`
-- `npm run clean` — clear `public/` and `db.json` when the build gets stuck
-- `npx hexo new post "Title"` — scaffold a post in `source/_posts/`
+Use `pnpm`; the `preinstall` script enforces it.
 
-No test or lint tooling exists; verify changes with a clean build and a local preview.
+- `pnpm dev` or `pnpm start`: run the local Astro dev server.
+- `pnpm check`: run Astro diagnostics.
+- `pnpm type-check`: run TypeScript with `--noEmit`.
+- `pnpm format`: format `src` with Biome.
+- `pnpm lint`: run Biome checks and safe fixes on `src`.
+- `pnpm build`: generate icons, LQIPs, the Astro build, font subsets, and Pagefind search output in `dist`.
+- `pnpm preview`: preview the production build locally.
+- `pnpm new-post`: scaffold a new content post.
 
 ## Coding Style & Naming Conventions
 
-- Posts use the front-matter pattern `title`, `date`, `tags` from `scaffolds/post.md`.
-- Keep Chinese filenames as-is, e.g. `source/_posts/参观寺庙见女师傅诵经有感.md`.
-- The `date` field sets the permalink (`:year/:month/:day/:title/`); never change it on a published post — it breaks inbound links.
-- Use 2-space indentation in YAML files and match the surrounding style.
+Biome is the formatter and linter. It uses tabs for indentation and double quotes for JavaScript/TypeScript strings. Keep Astro and Svelte components in `PascalCase` (`PostCard.astro`, `Search.svelte`), config modules in `camelCase` ending with `Config.ts`, and utilities in descriptive kebab case such as `date-utils.ts`. Keep `src/types` aligned with `src/config`. Avoid unrelated formatting churn.
 
 ## Testing Guidelines
 
-No automated tests exist. After changes, run `npm run build` (it must finish without unrendered-file warnings), then `npm run server` and confirm the post renders at its permalink.
+There is no dedicated unit-test framework configured. Before submitting changes, run `pnpm check`, `pnpm type-check`, and `pnpm build` for rendering, content, or generated asset work. For visual or interactive changes, verify with `pnpm dev` or `pnpm preview` and include screenshots in the PR. Name future tests near the feature they cover, using the local file name as the stem.
 
 ## Commit & Pull Request Guidelines
 
-Commit messages follow two patterns: `Publish: <title>` for new posts (e.g. `Publish: 测试文章-你好世界`), and short imperative summaries for infra/config changes (e.g. `Update deploy.yml`).
-
-Every push to `main` deploys, so keep PRs small and focused. Describe what changed and why, confirm the build passes, and flag anything that alters URLs or site behavior. Screenshots are only expected for theme or layout changes.
+Use Conventional Commits, matching the current history: `feat: ...`, `fix: ...`, and `chore: ...`. Keep commits and PRs focused on one concern. PRs should include a concise summary, linked issues when relevant, validation commands run, and screenshots for UI changes. Discuss major features or design changes in an issue or discussion before implementation.
 
 ## Security & Configuration Tips
 
-- Never run `hexo deploy` or re-add `hexo-deployer-git`; it would overwrite the source branch.
-- In Settings → Pages, keep the source set to "GitHub Actions", or deploys silently stop updating the live site.
-- Delete stray Windows `*:Zone.Identifier` files next to posts; Hexo warns about them.
-
-## Agent-Specific Instructions
-
-- Communicate with the user in Chinese (中文) unless they ask otherwise.
+Do not commit secrets, tokens, or service keys in config files. Keep deployment-specific settings in the target platform environment, and review generated files such as `dist`, `src/constants/lqips.json`, and `src/constants/icons.ts` before committing them.
