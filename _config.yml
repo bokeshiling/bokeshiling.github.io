@@ -96,6 +96,10 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: landscape
+theme: flatpaper
 
 # Deployment is handled by GitHub Actions (see .github/workflows/deploy.yml).
+
+# Site Map
+sitemap:
+  path: sitemap.xml
